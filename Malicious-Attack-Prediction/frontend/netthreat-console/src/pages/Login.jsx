@@ -134,7 +134,7 @@ const Login = () => {
             />
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold"
+              className="w-full bg-blue-600 text-sm text-blue-600 hover:underline"
             > {/* Changed button style for clarity, you can revert if needed */}
               Sign in
             </button>

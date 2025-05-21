@@ -13,7 +13,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
-const tabs = ["Confusion Matrix", "Feature Importance", "Heatmap"];
+const tabs = ["Confusion Matrix", "Heatmap"];
 
 export default function Visualize() {
   const [tab, setTab] = useState(0);
@@ -101,17 +101,17 @@ export default function Visualize() {
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">📊 Prediction Results</h2>
 
       <div className="bg-green-100 text-green-800 px-4 py-2 rounded-md inline-block font-medium">
-        ✅ Accuracy: {Math.round(accuracy * 100)}%
+        ✅ Accuracy of the True-Positives: {Math.round(accuracy * 100)}%
       </div>
 
         <div className="overflow-x-auto mt-4">
         <table className="min-w-full text-sm text-left border rounded-lg overflow-hidden">
           <thead className="bg-blue-600 text-white">
             <tr>
-              <th className="px-4 py-2">class</th>
-              <th className="px-4 py-2"></th>
-              <th className="px-4 py-2"></th>
-              <th className="px-4 py-2"></th>
+              <th className="px-4 py-2">Predicted Labels</th>
+              {/* <th className="px-4 py-2">Precision</th>
+              <th className="px-4 py-2">Recall</th>
+              <th className="px-4 py-2">F1-Score</th> */}
               <th className="px-4 py-2">Number of Instances</th>
             </tr>
           </thead>
@@ -119,9 +119,9 @@ export default function Visualize() {
             {classKeys.map((label) => (
               <tr key={label}>
                 <td className="px-4 py-2">{label}</td>
-                <td className="px-4 py-2">{classification_report[label]["precision"]?.toFixed(2)}</td>
+                {/* <td className="px-4 py-2">{classification_report[label]["precision"]?.toFixed(2)}</td>
                 <td className="px-4 py-2">{classification_report[label]["recall"]?.toFixed(2)}</td>
-                <td className="px-4 py-2">{classification_report[label]["f1-score"]?.toFixed(2)}</td>
+                <td className="px-4 py-2">{classification_report[label]["f1-score"]?.toFixed(2)}</td> */}
                 <td className="px-4 py-2">{classification_report[label]["support"]}</td>
               </tr>
             ))}
@@ -165,21 +165,21 @@ export default function Visualize() {
                 },
               }}
             />
+          // ) : tab === 1 ? (
+          //   <Bar
+          //     data={prfData}
+          //     options={{
+          //       responsive: true,
+          //       plugins: {
+          //         legend: { position: "top" },
+          //         title: { display: true, text: "Precision, Recall, F1-Score per Class" },
+          //       },
+          //       scales: {
+          //         y: { beginAtZero: true, max: 1 },
+          //       },
+          //     }}
+          //   />
           ) : tab === 1 ? (
-            <Bar
-              data={prfData}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: { position: "top" },
-                  title: { display: true, text: "Precision, Recall, F1-Score per Class" },
-                },
-                scales: {
-                  y: { beginAtZero: true, max: 1 },
-                },
-              }}
-            />
-          ) : tab === 2 ? (
             <Pie
               data={pieData}
               options={{
