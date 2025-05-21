@@ -1,0 +1,43 @@
+{
+    "prediction_timestamp": "2025-05-20T06:43:49.261133+00:00",
+    "accuracy": 0.7333333333333333,
+    "total_predictions": 15,
+    "threats_detected": 5,
+    "safe_entries": 10,
+    "anomaly_distribution": {
+        "labels": [
+            "neptune"
+        ],
+        "datasets": [
+            {
+                "data": [
+                    5
+                ],
+                "backgroundColor": [
+                    "#ef4444",
+                    "#f97316",
+                    "#eab308",
+                    "#3b82f6",
+                    "#10b981"
+                ]
+            }
+        ]
+    },
+    "detection_rate_over_time": {
+        "labels": [
+            "2025-05-20 06:43:49"
+        ],
+        "datasets": [
+            {
+                "label": "Detections",
+                "data": [
+                    5
+                ],
+                "borderColor": "#4F46E5",
+                "backgroundColor": "rgba(79,70,229,0.2)",
+                "tension": 0.4,
+                "fill": true
+            }
+        ]
+    }
+}

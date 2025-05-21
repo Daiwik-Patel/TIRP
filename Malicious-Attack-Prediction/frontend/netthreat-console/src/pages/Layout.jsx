@@ -38,10 +38,10 @@ export default function Layout() {
 
         {/* Navigation Links */}
         <nav className="flex-1 space-y-2">
-          <LinkItem to="/dashboard">
+          {/* <LinkItem to="/dashboard">
             <FaTachometerAlt className="w-5 h-5" />
             Dashboard
-          </LinkItem>
+          </LinkItem> */}
           <LinkItem to="/upload">
             <FiUploadCloud className="w-5 h-5" />
             Upload

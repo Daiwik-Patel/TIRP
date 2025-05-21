@@ -1,34 +1,33 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-
 /* PUBLIC */
-import Login   from "./pages/Login";
-import Signup  from "./pages/Signup";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 /* USER side */
-import Layout          from "./pages/Layout";
-import Dashboard       from "./pages/Dashboard";
-import Upload          from "./pages/Upload";
-import Visualize       from "./pages/Visualize";
-import Reports         from "./pages/Reports";
-import History         from "./pages/History";
+import Layout from "./pages/Layout";
+// import Dashboard from "./pages/Dashboard";
+import Upload from "./pages/Upload";
+import Visualize from "./pages/Visualize";
+import Reports from "./pages/Reports";
+// import History from "./pages/History"; // Assuming you have a History component
 
 /* ADMIN side */
-import AdminLayout     from "./pages/admin/AdminLayout";
-import AdminDashboard  from "./pages/admin/AdminDashboard";
-import ManageUsers     from "./pages/admin/ManageUsers";
-import ManageModels    from "./pages/admin/ManageModels";
-import SystemConfig    from "./pages/admin/SystemConfig";
-import Monitoring      from "./pages/admin/Monitoring";
-import Security        from "./pages/admin/Security";
-import Alerts          from "./pages/admin/Alerts";
+import AdminLogin from "./pages/admin/Admin-login";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ManageUsers from "./pages/admin/ManageUsers";
+import ManageModels from "./pages/admin/ManageModels";
+// import SystemConfig from "./pages/admin/SystemConfig";
+// import Monitoring from "./pages/admin/Monitoring";
+// import Security from "./pages/admin/Security";
+// import Alerts from "./pages/admin/Alerts";
 
-/* Guard wrapper */
-
+/* Guard wrapper - You'll likely implement this later */
 
 export default function App() {
-         // just to know where to redirect root
+  // just to know where to redirect root
 
   return (
     <BrowserRouter>
@@ -37,33 +36,38 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
+        {/* ───── ADMIN Public │ Admin Login ───── */}
+        <Route path="/admin/admin-login" element={<AdminLogin />} />
+
         {/* ───── USER side (role = user) ───── */}
         <Route>
           <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/upload"    element={<Upload />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+            <Route path="/upload" element={<Upload />} />
             <Route path="/visualize" element={<Visualize />} />
-            <Route path="/reports"   element={<Reports />} />
-            <Route path="/history"   element={<History />} />
+            <Route path="/reports" element={<Reports />} />
+            {/* <Route path="/history" element={<History />} /> */}
           </Route>
         </Route>
 
         {/* ───── ADMIN side (role = admin) ───── */}
-        
+        <Route>
           <Route element={<AdminLayout />}>
-            <Route path="/admin/dashboard"  element={<AdminDashboard />} />
-            <Route path="/admin/users"      element={<ManageUsers />} />
-            <Route path="/admin/models"     element={<ManageModels />} />
-            <Route path="/admin/config"     element={<SystemConfig />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<ManageUsers />} />
+            <Route path="/admin/models" element={<ManageModels />} />
+            <Route path="/admin/upload" element={<Upload />} />
+            <Route path="/admin/visualize" element={<Visualize />} />
+            <Route path="/admin/reports" element={<Reports />} />
+            {/* <Route path="/admin/config" element={<SystemConfig />} />
             <Route path="/admin/monitoring" element={<Monitoring />} />
-            <Route path="/admin/security"   element={<Security />} />
-            <Route path="/admin/alerts"     element={<Alerts />} />
+            <Route path="/admin/security" element={<Security />} />
+            <Route path="/admin/alerts" element={<Alerts />} /> */}
           </Route>
-        
+        </Route>
 
         {/* ───── Fallback ───── */}
-        
-         
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

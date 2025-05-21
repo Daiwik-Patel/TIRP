@@ -1,70 +1,125 @@
 // src/pages/Reports.jsx
 import React, { useEffect, useState } from "react";
+import { jsPDF } from "jspdf";
 
 export default function Reports() {
-  const [report, setReport] = useState(null);
+  const [reportList, setReportList] = useState([]);
+  const [selectedReportData, setSelectedReportData] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Load from localStorage (or you can use context/backend fetch here)
   useEffect(() => {
-    const savedPrediction = localStorage.getItem("lastPrediction");
-    if (savedPrediction) {
-      setReport(JSON.parse(savedPrediction));
-    }
+    fetchReportList();
   }, []);
+
+  const fetchReportList = async () => {
+    try {
+      const response = await fetch("/api/reports/"); // Your Django endpoint to list report files
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setReportList(data.reports); // Assuming your Django endpoint returns { reports: ['filename1.json', 'filename2.json', ...] }
+      setError(null);
+    } catch (e) {
+      setError("Failed to fetch report list.");
+      console.error("Error fetching report list:", e);
+    }
+  };
+
+  const fetchReportData = async (filename) => {
+    try {
+      const response = await fetch(`/api/reports/${filename}`); // Your Django endpoint to get report content
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setSelectedReportData(data);
+      setError(null);
+    } catch (e) {
+      setError(`Failed to fetch report data for ${filename}.`);
+      console.error(`Error fetching report data for ${filename}:`, e);
+      setSelectedReportData(null);
+    }
+  };
+
+  const generatePdf = () => {
+    if (selectedReportData) {
+      const doc = new jsPDF();
+      let y = 20;
+      const margin = 20;
+      const lineHeight = 10;
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Prediction Report Details", margin, y);
+      y += lineHeight + 5;
+      doc.setFont("helvetica", "normal");
+
+      function addLine(text) {
+        doc.text(text, margin, y);
+        y += lineHeight;
+        if (y > doc.internal.pageSize.height - margin) {
+          doc.addPage();
+          y = margin + lineHeight;
+        }
+      }
+
+      for (const key in selectedReportData) {
+        if (typeof selectedReportData[key] === 'object') {
+          addLine(`${key}:`);
+          const nestedObject = JSON.stringify(selectedReportData[key], null, 2).split('\n');
+          nestedObject.forEach(line => {
+            addLine(`  ${line}`);
+          });
+        } else {
+          addLine(`${key}: ${selectedReportData[key]}`);
+        }
+      }
+
+      doc.save("prediction_report.pdf");
+    } else {
+      alert("No report data to generate PDF.");
+    }
+  };
 
   return (
     <div className="bg-white shadow rounded p-6 overflow-x-auto">
-      <h2 className="text-xl font-semibold mb-4">Prediction Report</h2>
+      <h2 className="text-xl font-semibold mb-4">Prediction Reports</h2>
 
-      {!report ? (
-        <div className="text-gray-600">No report available</div>
-      ) : (
-        <>
-          <div className="mb-4 text-sm">
-            <div><span className="font-semibold">Accuracy:</span> {(report.accuracy * 100).toFixed(2)}%</div>
-            <div><span className="font-semibold">Total Predictions:</span> {report.predicted_labels.length}</div>
-            <div className="mt-2"><span className="font-semibold">Summary:</span></div>
-            <ul className="list-disc pl-5 text-sm">
-              {Object.entries(
-                report.predicted_labels.reduce((acc, label) => {
-                  acc[label] = (acc[label] || 0) + 1;
-                  return acc;
-                }, {})
-              ).map(([label, count]) => (
-                <li key={label}>
-                  <strong>{label}:</strong> {count} predictions
-                </li>
-              ))}
-            </ul>
-          </div>
+      {error && <div className="text-red-500 mb-4">{error}</div>}
 
-          <div className="overflow-x-auto mt-4">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-100 text-left">
-                <tr>
-                  <th className="px-4 py-2">Class</th>
-                  <th className="px-4 py-2">Precision</th>
-                  <th className="px-4 py-2">Recall</th>
-                  <th className="px-4 py-2">F1-Score</th>
-                  <th className="px-4 py-2">Support</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(report.classification_report)
-                  .filter(([k]) => !["accuracy", "macro avg", "weighted avg"].includes(k))
-                  .map(([label, metrics]) => (
-                    <tr key={label} className="border-t">
-                      <td className="px-4 py-2">{label}</td>
-                      <td className="px-4 py-2">{metrics.precision.toFixed(2)}</td>
-                      <td className="px-4 py-2">{metrics.recall.toFixed(2)}</td>
-                      <td className="px-4 py-2">{metrics["f1-score"].toFixed(2)}</td>
-                      <td className="px-4 py-2">{metrics.support}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Available Reports:</h3>
+        {reportList.length === 0 ? (
+          <div className="text-gray-600">No reports available.</div>
+        ) : (
+          <ul className="list-disc pl-5 text-sm">
+            {reportList.map((filename) => (
+              <li key={filename}>
+                <button
+                  className="text-blue-500 hover:underline"
+                  onClick={() => fetchReportData(filename)}
+                >
+                  {filename}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {selectedReportData && (
+        <div className="mt-6 border-t pt-4">
+          <h3 className="text-lg font-semibold mb-2">Report Details:</h3>
+          <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
+            {JSON.stringify(selectedReportData, null, 2)}
+          </pre>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+            onClick={generatePdf}
+          >
+            Download as PDF
+          </button>
+        </div>
       )}
     </div>
   );

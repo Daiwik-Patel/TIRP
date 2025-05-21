@@ -19,11 +19,16 @@ export default function Visualize() {
   const [tab, setTab] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
+  const currentLoc = useLocation();
+  const currentUrl = currentLoc.pathname + currentLoc.search + currentLoc.hash;
 
   const prediction = location.state?.prediction;
 
   useEffect(() => {
-    if (!prediction) navigate("/upload");
+    const route = currentUrl.split('/')[1] === 'admin' ? '/admin/upload' : '/upload'
+    console.log(route);
+    console.log(currentUrl.split('/')[1])
+    if (!prediction) navigate(route);
   }, [prediction, navigate]);
 
   if (!prediction) return null;
@@ -103,11 +108,11 @@ export default function Visualize() {
         <table className="min-w-full text-sm text-left border rounded-lg overflow-hidden">
           <thead className="bg-blue-600 text-white">
             <tr>
-              <th className="px-4 py-2">Class</th>
-              <th className="px-4 py-2">Precision</th>
-              <th className="px-4 py-2">Recall</th>
-              <th className="px-4 py-2">F1-Score</th>
-              <th className="px-4 py-2">Support</th>
+              <th className="px-4 py-2">class</th>
+              <th className="px-4 py-2"></th>
+              <th className="px-4 py-2"></th>
+              <th className="px-4 py-2"></th>
+              <th className="px-4 py-2">Number of Instances</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y">

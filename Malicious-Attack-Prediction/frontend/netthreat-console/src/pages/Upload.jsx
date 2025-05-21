@@ -16,12 +16,16 @@ export default function Upload() {
       return;
     }
 
-    const formData = new FormData();
+    var formData = new FormData();
     formData.append("file", file);
+
+    
 
     try {
       setLoading(true);
 
+      console.log(formData);
+      
       const response = await axios.post("/api/predict/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",

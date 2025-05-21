@@ -1,0 +1,39 @@
+{
+    "prediction_timestamp": "2025-05-20T12:50:09.468058+00:00",
+    "accuracy": 0.2,
+    "total_predictions": 5,
+    "threats_detected": 0,
+    "safe_entries": 5,
+    "anomaly_distribution": {
+        "labels": [],
+        "datasets": [
+            {
+                "data": [],
+                "backgroundColor": [
+                    "#ef4444",
+                    "#f97316",
+                    "#eab308",
+                    "#3b82f6",
+                    "#10b981"
+                ]
+            }
+        ]
+    },
+    "detection_rate_over_time": {
+        "labels": [
+            "2025-05-20 12:50:09"
+        ],
+        "datasets": [
+            {
+                "label": "Detections",
+                "data": [
+                    0
+                ],
+                "borderColor": "#4F46E5",
+                "backgroundColor": "rgba(79,70,229,0.2)",
+                "tension": 0.4,
+                "fill": true
+            }
+        ]
+    }
+}
